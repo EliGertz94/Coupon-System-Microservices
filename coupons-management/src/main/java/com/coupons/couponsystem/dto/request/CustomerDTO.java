@@ -1,4 +1,4 @@
-package com.coupons.couponsystem.dto;
+package com.coupons.couponsystem.dto.request;
 
 import com.coupons.couponsystem.model.Purchase;
 import lombok.Builder;

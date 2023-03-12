@@ -33,9 +33,7 @@ public class Purchase {
     private Customer customer;
 
     private boolean paymentApproval;
-//    @OneToMany(fetch = FetchType.EAGER,
-//            cascade = CascadeType.DETACH)
-//    private List<Coupon> coupons;
+
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = CascadeType.DETACH)

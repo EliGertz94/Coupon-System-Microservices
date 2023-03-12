@@ -25,5 +25,5 @@ public abstract class ClientFacade {
 
 
 
-   public abstract boolean logIn(String email, String password, ClientType clientType) throws CouponSystemException;
+  // public abstract boolean logIn(String email, String password, ClientType clientType) throws CouponSystemException;
 }

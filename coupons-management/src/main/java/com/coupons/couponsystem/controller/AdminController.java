@@ -1,18 +1,27 @@
 package com.coupons.couponsystem.controller;
 
 import com.coupons.couponsystem.clientLogIn.ClientType;
-import com.coupons.couponsystem.dto.CompanyDTO;
-import com.coupons.couponsystem.dto.CustomerDTO;
+import com.coupons.couponsystem.dto.DTOUtills.DTOTransition;
+import com.coupons.couponsystem.dto.request.CompanyDTO;
+import com.coupons.couponsystem.dto.request.CustomerDTO;
+import com.coupons.couponsystem.dto.response.CompanyDTOResponse;
+import com.coupons.couponsystem.dto.response.CustomerDTOResponse;
+import com.coupons.couponsystem.dto.response.ResponseMessage;
 import com.coupons.couponsystem.exception.CouponSystemException;
+import com.coupons.couponsystem.exception.customeResponse.CustomResponse;
 import com.coupons.couponsystem.model.Company;
 import com.coupons.couponsystem.model.Customer;
 import com.coupons.couponsystem.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
+import static com.coupons.couponsystem.exception.customeResponse.CustomResponse.response;
+
 @CrossOrigin
 @RestController
 @RequestMapping("api/admin/")
@@ -22,13 +31,9 @@ public class AdminController extends ClientController {
 
 
     @PostMapping("add-company")
-        public ResponseEntity<Company> addCompany(@RequestBody CompanyDTO companyDTO){
+        public ResponseEntity<ResponseMessage> addCompany(@RequestBody CompanyDTO companyDTO){
         try {
 
-//            for (Coupon coupon:
-//                    companyDTO.getCoupons()) {
-//                System.out.println(coupon);
-//            }
             User user = User.builder()
                     .id(0)
                     .password(companyDTO.getPassword())
@@ -42,34 +47,38 @@ public class AdminController extends ClientController {
                     .coupons(companyDTO.getCoupons())
                     .build();
 
-
-            return new ResponseEntity<>(adminService.addCompany(user, company), HttpStatus.OK);
+            return new ResponseEntity<>(dtoTransition.EntityToDTO(adminService.addCompany(user, company)
+                    ,"Company was added successfully"), HttpStatus.OK);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
         }
     }
 
     @PutMapping("update-company")
-    public ResponseEntity<Company> updateCompany(@RequestBody CompanyDTO company){
+    public ResponseEntity<ResponseMessage> updateCompany(@RequestBody CompanyDTO companyDTO){
 //        System.out.println("company.getEmail() "+company.getEmail());
         try {
-            return new ResponseEntity<>(adminService.updateCompany(
-                    new User(company.getId(),company.getUsername(),company.getPassword(),ClientType.Company),
-                    new Company(company.getCompanyId(),company.getName(),company.getCoupons())),HttpStatus.OK);
+            User user =new User(companyDTO.getId(),companyDTO.getUsername(),companyDTO.getPassword(),ClientType.Company);
+           Company company= new Company(companyDTO.getCompanyId(),companyDTO.getName(),companyDTO.getCoupons());
+            return new ResponseEntity<>(
+                    dtoTransition.EntityToDTO(adminService.updateCompany(user,company),"Company was Updates")
+                    ,HttpStatus.OK);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(e.getHttpStatus(),e.getMessage());
 
+            return response(e.getHttpStatus(),e.getMessage());
         }
     }
 
     @DeleteMapping("delete-company/{companyId}")
-    public ResponseEntity<String> deleteCompany(@PathVariable Long companyId){
+    public ResponseEntity<ResponseMessage> deleteCompany(@PathVariable Long companyId){
         try {
             adminService.deleteCompany(companyId);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
         }
-        return new ResponseEntity<>("company was deleted",HttpStatus.OK);
+        return CustomResponse.response(HttpStatus.OK,"company was deleted");
+
+
     }
 
     @GetMapping("/company/get-all/")
@@ -77,47 +86,53 @@ public class AdminController extends ClientController {
         return  new ResponseEntity<>(adminService.getAllCompanies(),HttpStatus.OK);
     }
     @GetMapping("/company/{companyId}")
-    public ResponseEntity<Company> getOneCompany(@PathVariable Long companyId){
+    public ResponseEntity<ResponseMessage> getOneCompany(@PathVariable Long companyId){
         try {
-            return  new ResponseEntity<>(adminService.getOneCompany(companyId),HttpStatus.OK);
+            return  new ResponseEntity<>(dtoTransition.EntityToDTO(adminService.getOneCompany(companyId),"success"),HttpStatus.OK);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
 
         }
     }
 
-    @PostMapping("/customer/")
-    public ResponseEntity<Customer> addCustomer(@RequestBody CustomerDTO customerDTO){
+    @PostMapping("/add-customer/")
+    public ResponseEntity<ResponseMessage> addCustomer(@RequestBody CustomerDTO customerDTO){
         try {
-            return  new ResponseEntity<>(adminService.addCustomer(
-                    new User(customerDTO.getId(), customerDTO.getUsername(), customerDTO.getPassword(),ClientType.Customer)
-                    ,new Customer(customerDTO.getCustomerId(),customerDTO.getFirstName(), customerDTO.getLastName(), customerDTO.getPurchases())),HttpStatus.OK);
+            User user =  new User(customerDTO.getId(), customerDTO.getUsername(), customerDTO.getPassword(),ClientType.Customer);
+            Customer customer =new Customer(customerDTO.getCustomerId(),customerDTO.getFirstName(), customerDTO.getLastName(), customerDTO.getPurchases()) ;
+            return  new ResponseEntity<>(dtoTransition.EntityToDTO(adminService.addCustomer(
+                   user,customer),"customer was added successfully"),HttpStatus.OK);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());
+            System.out.println(e.getMessage() + "  was the message");
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
 
         }
     }
 
     @PutMapping("/customer/update")
-    public ResponseEntity<Customer> updateCustomer(@RequestBody CustomerDTO customerDTO){
+    public ResponseEntity<ResponseMessage> updateCustomer(@RequestBody CustomerDTO customerDTO){
         try {
-            return new ResponseEntity<>(adminService.updateCustomer(
-             new User(customerDTO.getId(), customerDTO.getUsername(), customerDTO.getPassword(),ClientType.Customer)
-            ,new Customer(customerDTO.getCustomerId(),customerDTO.getFirstName(), customerDTO.getLastName(), customerDTO.getPurchases())),HttpStatus.OK);
+            User user=    new User(customerDTO.getId(), customerDTO.getUsername(), customerDTO.getPassword(),ClientType.Customer);
+           Customer customer =  new Customer(customerDTO.getCustomerId(),customerDTO.getFirstName(), customerDTO.getLastName(), customerDTO.getPurchases());
+
+           return new ResponseEntity<>(dtoTransition.EntityToDTO(adminService.updateCustomer(user,customer),"success")
+                    ,HttpStatus.OK);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(e.getHttpStatus(),e.getMessage());
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
 
         }
     }
     @DeleteMapping("/customer/{customerId}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable Long customerId){
+    public ResponseEntity<ResponseMessage> deleteCustomer(@PathVariable Long customerId){
         try {
             adminService.deleteCustomer(customerId);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
 
         }
-        return new ResponseEntity<>("customer"+customerId+" was deleted",HttpStatus.OK);
+        return CustomResponse.response(HttpStatus.OK,"customer"+customerId+" was deleted");
+
+
     }
 
     @GetMapping("/customer/get-all")
@@ -126,11 +141,12 @@ public class AdminController extends ClientController {
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<Customer> getOneCustomer(@PathVariable Long customerId){
+    public ResponseEntity<ResponseMessage> getOneCustomer(@PathVariable Long customerId){
         try {
-            return  new ResponseEntity<>(adminService.getOneCustomer(customerId),HttpStatus.OK);
+            return  new ResponseEntity<>(dtoTransition.EntityToDTO(adminService.getOneCustomer(customerId),"success"),HttpStatus.OK);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
+
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
         }
     }
 

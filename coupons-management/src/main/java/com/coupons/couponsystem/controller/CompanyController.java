@@ -1,7 +1,9 @@
 package com.coupons.couponsystem.controller;
 
 import com.coupons.couponsystem.dto.TimeframeDTO;
+import com.coupons.couponsystem.dto.response.ResponseMessage;
 import com.coupons.couponsystem.exception.CouponSystemException;
+import com.coupons.couponsystem.exception.customeResponse.CustomResponse;
 import com.coupons.couponsystem.model.Category;
 import com.coupons.couponsystem.model.Coupon;
 import org.slf4j.Logger;
@@ -21,34 +23,36 @@ public class CompanyController  extends ClientController{
 
 
     @PostMapping("/add")
-    public ResponseEntity<String> addCoupon(@RequestBody  Coupon coupon){
+    public ResponseEntity<ResponseMessage> addCoupon(@RequestBody  Coupon coupon){
         try {
             companyService.addCoupon(coupon);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(e.getHttpStatus(),e.getMessage());
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
         }
-        return new ResponseEntity<>("coupon was added",HttpStatus.ACCEPTED);
+        return CustomResponse.response(HttpStatus.OK,"coupon was added!");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateCoupon(@RequestBody  Coupon coupon){
+    public ResponseEntity<ResponseMessage> updateCoupon(@RequestBody  Coupon coupon){
         try {
             companyService.updateCoupon(coupon);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(e.getHttpStatus(),e.getMessage());
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
 
         }
-        return new ResponseEntity<>("coupon was updated",HttpStatus.OK);
+
+        return CustomResponse.response(HttpStatus.OK,"Coupon is up to date");
     }
 
     @DeleteMapping("/delete/{couponId}")
-    public ResponseEntity<String> deleteCoupon(@PathVariable  Long couponId){
+    public ResponseEntity<ResponseMessage> deleteCoupon(@PathVariable  Long couponId){
         try {
             companyService.deleteCoupon(couponId);
         } catch (CouponSystemException e) {
-            throw new ResponseStatusException(e.getHttpStatus(),e.getMessage());
+            return CustomResponse.response(e.getHttpStatus(),e.getMessage());
         }
-        return new ResponseEntity<>("coupon was deleted",HttpStatus.OK);
+        return CustomResponse.response(HttpStatus.OK,"coupon was deleted");
+
     }
 
     @GetMapping("/all-coupons")
@@ -58,25 +62,14 @@ public class CompanyController  extends ClientController{
 
     @GetMapping("/all-coupons/category/{category}")
     public ResponseEntity<List<Coupon>> getCompanyCoupons(@PathVariable String category){
-        System.out.println(category);
         return new ResponseEntity<>(companyService.getAllCompanyCouponsByCategory(category) ,HttpStatus.OK);
     }
 
     @GetMapping("/all-coupons/max-price/{maxPrice}")
     public ResponseEntity<List<Coupon>> getCompanyCoupons(@PathVariable double maxPrice){
-        System.out.println(maxPrice);
         return new ResponseEntity<>(companyService.getAllCompanyCouponsByPrice(maxPrice) ,HttpStatus.OK);
     }
 
-
-    @GetMapping("/revenue")
-    public ResponseEntity<Double> getRevenueByTimeFrame(@RequestBody TimeframeDTO timeframe){
-        try {
-            return new ResponseEntity<>(companyService.getRevenueByTimeFrame(timeframe.getStart(),timeframe.getEnd()),HttpStatus.OK);
-        } catch (CouponSystemException e) {
-            throw new ResponseStatusException(e.getHttpStatus(),e.getMessage());
-        }
-    }
 
 
 }

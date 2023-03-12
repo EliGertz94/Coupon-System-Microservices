@@ -22,7 +22,7 @@ public class Customer {
 
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userName")
+    @JoinColumn(name = "user_id")
     private User user;
 
 

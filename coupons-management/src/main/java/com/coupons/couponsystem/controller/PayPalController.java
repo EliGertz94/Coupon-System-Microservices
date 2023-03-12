@@ -1,8 +1,9 @@
 package com.coupons.couponsystem.controller;
 
-import com.coupons.couponsystem.dto.Order;
-import com.coupons.couponsystem.dto.RequestPurchaseStats;
+import com.coupons.couponsystem.dto.request.Order;
+import com.coupons.couponsystem.dto.request.RequestPurchaseStats;
 import com.coupons.couponsystem.exception.CouponSystemException;
+import com.coupons.couponsystem.exception.customeResponse.CustomResponse;
 import com.coupons.couponsystem.model.Coupon;
 import com.coupons.couponsystem.model.Customer;
 import com.coupons.couponsystem.model.Purchase;
@@ -57,11 +58,14 @@ public class PayPalController extends ClientController {
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     System.out.println("the links " + link.getHref());
-                    return "redirect:"+link.getHref();
+                    return link.getHref();
                 }
             }
 
         } catch (PayPalRESTException e) {
+            throw new RuntimeException(e);
+        }
+        catch(Exception e){
             throw new RuntimeException(e);
         }
         return "redirect:/";
@@ -135,7 +139,7 @@ public class PayPalController extends ClientController {
                         .coupons(coupons)
                         .build();
 
-                Purchase savedPurchase = purchaseRepository.save(purchase);
+//                Purchase savedPurchase = purchaseRepository.save(purchase);
 
                purchase.setPaymentApproval(true);
                 purchaseRepository.save(purchase);
@@ -144,10 +148,11 @@ public class PayPalController extends ClientController {
                 return true;
             }
 
-        } catch (PayPalRESTException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-        } catch (CouponSystemException e) {
             throw new RuntimeException(e);
+//        } catch (CouponSystemException e) {
+//            throw new RuntimeException(e);
         }
         return null;
     }

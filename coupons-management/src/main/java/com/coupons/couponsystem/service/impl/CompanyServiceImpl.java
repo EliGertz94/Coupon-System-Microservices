@@ -40,7 +40,7 @@ public class CompanyServiceImpl extends ClientFacade  implements CompanyService 
      * @return
      * @throws CouponSystemException company not found
      */
-    @Override
+
     public boolean logIn(String email, String password, ClientType clientRole) throws CouponSystemException {
 
         User user =userRepository.findByUsername(email)

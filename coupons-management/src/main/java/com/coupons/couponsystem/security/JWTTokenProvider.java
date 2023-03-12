@@ -35,7 +35,7 @@ public class JWTTokenProvider {
                 .claim("authority",userDetails.getAuthorities().stream().toList().get(0).getAuthority())
                 .claim("userId",userDetails.getUserId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) // make an instance constant
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // make an instance constant
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
 
@@ -43,43 +43,41 @@ public class JWTTokenProvider {
 
 
 
-    public String getUserNameFromJwt(String token)
-    {
+    public String getUserNameFromJwt(String token) throws CouponSystemException {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws CouponSystemException {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    private Claims extractAllClaims(String token) throws CouponSystemException {
+        try{
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        }catch(Exception e)
+        {
+            throw new CouponSystemException(e.getMessage(),HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public boolean validateToken(String token,SecuredUser user) throws CouponSystemException {
-        try {
             String userName = getUserNameFromJwt(token);
           //  Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token);
             return (userName.equals(user.getUsername())&& !isTokenExpired(token));
 
-        }catch (ExpiredJwtException e){
-            throw new CouponSystemException("JWT was expired",HttpStatus.UNAUTHORIZED);
-        }
-        catch (Exception e){
-            throw  new AuthenticationCredentialsNotFoundException(" incorrect jwt ");
-        }
     }
 
-    private boolean isTokenExpired(String token) {  
+
+    private boolean isTokenExpired(String token) throws CouponSystemException {
             return extractExpiration(token).before(new Date()); 
     }
 
-    private Date extractExpiration(String token) {
+    private Date extractExpiration(String token) throws CouponSystemException {
         return extractClaim(token, Claims::getExpiration);
     }
 

@@ -1,6 +1,7 @@
 package com.coupons.couponsystem.model;
 
 import com.coupons.couponsystem.clientLogIn.ClientType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class User {
     private long id;
 
     private String username;
+//    @JsonIgnore
     private String password;
     @Column(name = "client_Role")
     @Enumerated(EnumType.STRING)

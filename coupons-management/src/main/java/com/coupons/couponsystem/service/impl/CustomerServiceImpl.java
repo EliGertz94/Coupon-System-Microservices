@@ -2,7 +2,7 @@ package com.coupons.couponsystem.service.impl;
 
 import com.coupons.couponsystem.CouponSystemApplication;
 import com.coupons.couponsystem.clientLogIn.ClientType;
-import com.coupons.couponsystem.dto.Order;
+import com.coupons.couponsystem.dto.request.Order;
 import com.coupons.couponsystem.exception.CouponSystemException;
 import com.coupons.couponsystem.model.Coupon;
 import com.coupons.couponsystem.model.Customer;
@@ -35,7 +35,7 @@ public class CustomerServiceImpl extends ClientFacade  implements CustomerServic
      * @return
      * @throws CouponSystemException - customer not found
      */
-    @Override
+
     public boolean logIn(String email, String password, ClientType clientRole) throws CouponSystemException {
 
         User customerUser = userRepository.findByUsername(email)
@@ -92,7 +92,7 @@ public class CustomerServiceImpl extends ClientFacade  implements CustomerServic
             Item item = new Item();
             item.setQuantity(couponPurchases.get(id) + "");
             item.setSku(id + "");
-            item.setName("Item Name");
+            item.setName(coupon.getTitle());
             item.setPrice(coupon.getPrice()+"");
             item.setCurrency("USD");
             items.add(item);
@@ -140,7 +140,7 @@ public class CustomerServiceImpl extends ClientFacade  implements CustomerServic
      * @return List<Coupon>
      */
     @Override
-    public List<Purchase> getCustomerPurchases() throws CouponSystemException {
+    public List<Purchase> getCustomerPurchases()  {
 
         List<Purchase> purchases= purchaseRepository.findAllByCustomer_id(this.customerId);
 

@@ -1,16 +1,15 @@
-package com.coupons.couponsystem.dto;
+package com.coupons.couponsystem.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 
-        @Data
+@Data
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        public class ResponseDTO {
+        public class LoginResponse extends ResponseMessage {
         private String accessToken;
         private final String tokenType = "Bearer ";
         private String username;
@@ -18,9 +17,13 @@ import org.springframework.security.core.GrantedAuthority;
         private String grantedAuthority;
 
 
-                public ResponseDTO(String accessToken,GrantedAuthority grantedAuthority,String username) {
+                public LoginResponse(String accessToken,String grantedAuthority,String username
+                ,String message) {
+                        super(message);
                         this.accessToken = accessToken;
-                        this.grantedAuthority = grantedAuthority.getAuthority();
+                        this.grantedAuthority = grantedAuthority;
                         this.username= username;
                 }
+
+
         }

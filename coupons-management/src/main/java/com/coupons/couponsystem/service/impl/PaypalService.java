@@ -29,7 +29,7 @@ public class PaypalService {
             String description,
             String cancelUrl,
             String successUrl,
-            List<Item> items) throws PayPalRESTException{
+            List<Item> items) throws PayPalRESTException ,Exception{
         Amount amount = new Amount();
         amount.setCurrency(currency);
         total = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -38,6 +38,7 @@ public class PaypalService {
         Transaction transaction = new Transaction();
         transaction.setDescription(description);
         ItemList itemList = new ItemList();
+
         itemList.setItems(items);
 
         transaction.setItemList(itemList);
@@ -63,7 +64,7 @@ public class PaypalService {
         return payment.create(payPalConfig.apiContext());
     }
 
-    public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
+    public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException ,Exception {
         Payment payment = new Payment();
 
         payment.setId(paymentId);

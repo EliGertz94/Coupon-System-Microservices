@@ -8,7 +8,6 @@ import lombok.*;
 import java.util.LinkedList;
 import java.util.List;
 
-//@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -59,14 +58,6 @@ public class Company {
 
         this.coupons=coupons;
     }
-
-    // the owner of the relationships is the one in the onetomany relations
-    //JoinColumn is the owner
-    //mappedBy is the
-    //the many will hold the foreign key
-    //the one is mapping
-    //persist to do the save forward
-    //
 
 
 
