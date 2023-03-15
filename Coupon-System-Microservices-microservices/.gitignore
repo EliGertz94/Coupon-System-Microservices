@@ -1,0 +1,4 @@
+# Project exclude paths
+/coupons-management/target/
+/purchase-stats/target/
+/user-stats/target/

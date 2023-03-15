@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Coupon-System-Microservices-microservices/Coupon-System-Microservices.iml" filepath="$PROJECT_DIR$/Coupon-System-Microservices-microservices/Coupon-System-Microservices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Coupon-System-Microservices-microservices.iml" filepath="$PROJECT_DIR$/.idea/Coupon-System-Microservices-microservices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Coupon-System-Microservices-microservices/coupons-management/coupons-managment.iml" filepath="$PROJECT_DIR$/Coupon-System-Microservices-microservices/coupons-management/coupons-managment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Coupon-System-Microservices-microservices/purchase-stats/purchase-stats.iml" filepath="$PROJECT_DIR$/Coupon-System-Microservices-microservices/purchase-stats/purchase-stats.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Coupon-System-Microservices-microservices/user-stats/user-stats.iml" filepath="$PROJECT_DIR$/Coupon-System-Microservices-microservices/user-stats/user-stats.iml" />
+    </modules>
+  </component>
+</project>
