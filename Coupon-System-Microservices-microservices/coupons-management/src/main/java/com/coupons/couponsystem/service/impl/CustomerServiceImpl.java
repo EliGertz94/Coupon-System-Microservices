@@ -162,16 +162,6 @@ public class CustomerServiceImpl extends ClientFacade  implements CustomerServic
         return purchases;
     }
 
-    /**
-     *
-     * @param category
-     * @return
-     */
-//    @Override
-//    public List<Coupon> getCustomerCoupons(Category category) {
-//        List<Coupon> coupons = couponRepository.findAllByCustomers_idAndCategory(this.customerId,category);
-//        return coupons;
-//    }
 
     /**
      *

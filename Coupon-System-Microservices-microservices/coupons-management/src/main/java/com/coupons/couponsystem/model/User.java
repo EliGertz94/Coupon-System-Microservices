@@ -28,15 +28,4 @@ public class User {
 
 
 
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Customer customer;
-//
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Company company;
-
-//    @ToString.Exclude
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-//    private List<Role> roles;
-
 }

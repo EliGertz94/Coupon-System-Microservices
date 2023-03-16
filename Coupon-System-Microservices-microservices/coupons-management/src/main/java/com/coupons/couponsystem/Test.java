@@ -34,7 +34,7 @@ public class Test implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        //just for user
+        //to start off with the admin...
 
         User user = User.builder()
                 .id(0)
@@ -45,33 +45,34 @@ public class Test implements CommandLineRunner {
 
         if(!userRepository.existsByUsername(user.getUsername())){
             userRepository.save(user);
+            System.out.println("first admin for test was added");
+
         }else{
             System.out.println("first admin for test is ready");
         }
 
+        //loginManager and service functionality
 
         try{
 
             AdminServiceImpl admin = (AdminServiceImpl) loginManager.logIn
                     ("admin@admin.com", "123456", ClientType.Administrator);
-
             if(admin!=null) {
-                System.out.println(admin);
 
                 User userCompanyRecord = User.builder()
                         .id(0)
                         .password("123456")
-                        .username("companyinc@gmail.com")
+                        .username("companyinc5@gmail.com")
                         .clientRole(ClientType.Company)
                         .build();
 
                 Company companyRecord = Company.builder()
                         .id(0L)
-                        .name("companyInc")
-                        .coupons(new ArrayList<>())
+                        .name("companyInc3")
+                        .coupons(null)
                         .build();
 
-                // admin.addCompany(userCompanyRecord,companyRecord);
+               //  admin.addCompany(userCompanyRecord,companyRecord);
 
                 User userCustomerRecord = User.builder()
                         .id(0)
@@ -79,6 +80,8 @@ public class Test implements CommandLineRunner {
                         .username("customer1@gmail.com")
                         .clientRole(ClientType.Customer)
                         .build();
+
+
 
                 Customer customerRecord = new Customer(0, "Shalom", "Wozzeck", new ArrayList<>());
 
@@ -112,6 +115,7 @@ public class Test implements CommandLineRunner {
                 CustomerServiceImpl customer = (CustomerServiceImpl) loginManager.logIn
                         ("haviv@gmail.com", "1AAA@313132", ClientType.Customer);
             if(customer!=null){
+                // --------- make purchase ----------
                 //will return a string to a PayPal website to make the transaction
                 // you need internet connection
                 //click on the link in the console
@@ -120,18 +124,24 @@ public class Test implements CommandLineRunner {
                 // email: sb-umpku25079892@personal.example.com
                 //password : AA123456
 
-                //list can as many ids you want plus duplicates
-                // once payment is approves purchase will be added
-                // and also to purchase_stats in other microservice
+                //list can have as many ids you want plus duplicates
+                // once payment is approved purchase will be added
+                // and also every coupon individually as a record to purchase_stats in other microservice
                 List<Long> couponListIds = new ArrayList<>();
                 couponListIds.add(7L);
                 couponListIds.add(8L);
 
+                //make purchase
                 System.out.println(customer.makePurchase(couponListIds));
-                System.out.println(customer.getCustomerId());
+
+
+                List<Purchase> purchases = customer.getCustomerPurchases();
+
             }
 
         } catch(CouponSystemException e){
+            System.out.println(e.getMessage());
+        }catch(Exception e){
             System.out.println(e.getMessage());
         }
 

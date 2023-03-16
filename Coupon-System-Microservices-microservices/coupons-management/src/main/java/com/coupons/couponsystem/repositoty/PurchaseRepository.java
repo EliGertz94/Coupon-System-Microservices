@@ -1,5 +1,6 @@
 package com.coupons.couponsystem.repositoty;
 
+import com.coupons.couponsystem.model.Coupon;
 import com.coupons.couponsystem.model.Purchase;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,4 +17,6 @@ public interface PurchaseRepository extends JpaRepository<Purchase,Long> {
    List<Purchase> findAllByCustomer_id(long customers_id);
 //   List<Purchase> findAllByPurchaseDateAfter(LocalDateTime purchaseDate);
    Optional<List<Purchase>> findAllByPurchaseDateBetween(LocalDateTime start, LocalDateTime end);
+
+
 }

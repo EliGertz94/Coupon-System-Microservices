@@ -39,14 +39,15 @@ public class Company {
             for (Coupon coupon :
                     coupons) {
                 coupon.setCompany(this);
-
-
-            }
+                     }
 
             this.coupons=coupons;
         }else {
             this.coupons = new LinkedList<>();
         }
+
+
+
     }
 
     public void setCoupons(List<Coupon> coupons) {
@@ -62,13 +63,7 @@ public class Company {
         this.coupons=coupons;
     }
 
-    // the owner of the relationships is the one in the onetomany relations
-    //JoinColumn is the owner
-    //mappedBy is the
-    //the many will hold the foreign key
-    //the one is mapping
-    //persist to do the save forward
-    //
+
 
 
 
