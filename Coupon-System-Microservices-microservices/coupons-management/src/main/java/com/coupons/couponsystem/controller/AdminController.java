@@ -40,6 +40,7 @@ public class AdminController extends ClientController {
                     .id(0L)
                     .name(companyDTO.getName())
                     .coupons(companyDTO.getCoupons())
+                    .isActive(true)
                     .build();
 
 
@@ -55,7 +56,7 @@ public class AdminController extends ClientController {
         try {
             return new ResponseEntity<>(adminService.updateCompany(
                     new User(company.getId(),company.getUsername(),company.getPassword(),ClientType.Company),
-                    new Company(company.getCompanyId(),company.getName(),company.getCoupons())),HttpStatus.OK);
+                    new Company(company.getCompanyId(),company.getName(),company.getCoupons(),company.isActive())),HttpStatus.OK);
         } catch (CouponSystemException e) {
             return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 
@@ -63,14 +64,19 @@ public class AdminController extends ClientController {
     }
 
     @DeleteMapping("delete-company/{companyId}")
-    public ResponseEntity<String> deleteCompany(@PathVariable Long companyId){
+    public ResponseEntity<Company> deleteCompany(@PathVariable Long companyId){
         try {
-            adminService.deleteCompany(companyId);
+            System.out.println(companyId);
+            return new ResponseEntity<>(adminService.deleteCompany(companyId),HttpStatus.OK);
+
         } catch (CouponSystemException e) {
+            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
         }
-        return new ResponseEntity<>("company was deleted",HttpStatus.OK);
     }
+
+
+
 
     @GetMapping("/all-companies/")
     public ResponseEntity<List<Company>> getAllCompanies(){

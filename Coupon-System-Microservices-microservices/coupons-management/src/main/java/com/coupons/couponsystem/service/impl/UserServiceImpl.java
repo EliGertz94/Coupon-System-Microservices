@@ -4,6 +4,7 @@ package com.coupons.couponsystem.service.impl;
 import com.coupons.couponsystem.exception.CouponSystemException;
 import com.coupons.couponsystem.model.User;
 import com.coupons.couponsystem.service.UserService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,7 @@ public class UserServiceImpl extends ClientFacade implements UserService {
 
 
 
-                if(!(user.getPassword().equals(password))||
-                !(user.getClientRole().toString().equals(clientType.toString())))
+                if(!(user.getPassword().equals(password)) ||  !(user.getClientRole().toString().equals(clientType.toString())))
                 {
                     return false;
                 }

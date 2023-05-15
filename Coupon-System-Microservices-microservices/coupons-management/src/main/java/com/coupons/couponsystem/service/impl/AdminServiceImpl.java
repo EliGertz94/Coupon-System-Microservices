@@ -7,6 +7,7 @@ import com.coupons.couponsystem.model.Company;
 import com.coupons.couponsystem.model.Customer;
 import com.coupons.couponsystem.model.User;
 import com.coupons.couponsystem.service.AdminService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@Scope("prototype")
 public class AdminServiceImpl extends  ClientFacade implements AdminService {
 
 
@@ -109,9 +111,14 @@ public class AdminServiceImpl extends  ClientFacade implements AdminService {
                         .orElseThrow(() -> new CouponSystemException("company not found updateCompany", HttpStatus.NOT_FOUND));
             User userRecord =  companyRecord.getUser();
 
+            System.out.println(company.isActive());
+
                 if (user.getUsername().equals(userRecord.getUsername())) {
                     userRecord.setPassword(user.getPassword());
                     companyRecord.setUser(userRecord);
+                    companyRecord.setName(company.getName());
+                    companyRecord.setActive(company.isActive());
+
                     return companyRecord;
 
                 }
@@ -119,11 +126,14 @@ public class AdminServiceImpl extends  ClientFacade implements AdminService {
                 if(userRepository.existsByUsername(user.getUsername())){
                     throw new CouponSystemException("can't update - email is in use - updateCompany", HttpStatus.BAD_REQUEST);
                 }
-
+            System.out.println(company.getName());
+                companyRecord.setName(company.getName());
                 userRecord.setPassword(user.getPassword());
                 userRecord.setUsername(user.getUsername());
                 companyRecord.setUser(userRecord);
-                return companyRecord;
+                companyRecord.setActive(company.isActive());
+
+            return companyRecord;
             }
 
 
@@ -132,13 +142,23 @@ public class AdminServiceImpl extends  ClientFacade implements AdminService {
      * @param id
      * @throws CouponSystemException company not found
      */
-    public void deleteCompany(long id) throws CouponSystemException {
+    public Company deleteCompany(long id) throws CouponSystemException {
+
+        System.out.println(id);
             Company company =  companyRepository.findById(id)
                     .orElseThrow(() -> new CouponSystemException("deleteCompany company not found",HttpStatus.NOT_FOUND));
-               User user=  company.getUser();
-            companyRepository.delete(company);
-            userRepository.delete(user);
-        }
+//               User user=  company.getUser();
+        System.out.println(company.getId());
+//                    couponRepository.deleteAllByCompany_id(company.getId());
+//                    companyRepository.delete(company);
+//                    userRepository.delete(user);
+        company.setActive(false);
+        return company;
+
+    }
+
+
+
 
         /**
          *

@@ -43,6 +43,8 @@ public class PayPalController extends ClientController {
 
     @PostMapping
     public ResponseEntity<?> payment(@RequestBody Order order){
+
+
         try {
             Payment payment = paypalService.createPayment(
                     order.getPrice(),
@@ -62,12 +64,14 @@ public class PayPalController extends ClientController {
                 }
             }
 
+
+
         } catch (PayPalRESTException e) {
-            return new ResponseEntity<>("paypal off line",HttpStatus.UNAUTHORIZED) ;
+                return new ResponseEntity<>("paypal off line 1",HttpStatus.UNAUTHORIZED) ;
 
 
         } catch (Exception e) {
-            return new ResponseEntity<>("paypal off line",HttpStatus.UNAUTHORIZED) ;
+            return new ResponseEntity<>("paypal off line 2",HttpStatus.UNAUTHORIZED) ;
 
         }
         return new ResponseEntity<>("redirect:",HttpStatus.OK) ;
@@ -81,7 +85,7 @@ public class PayPalController extends ClientController {
 
     // successful payment action endpoint
     @GetMapping("pay/success/")
-    public Boolean successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    public ResponseEntity<Purchase> successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
             Payment payment = paypalService.executePayment(paymentId, payerId);
 //            payment.getTransactions()
@@ -92,6 +96,7 @@ public class PayPalController extends ClientController {
 
                 //PayPal item List
                 List<Item> items = payment.getTransactions().get(0).getItemList().getItems();
+
 
                 double totalPrice = Double.parseDouble(payment.getTransactions().get(0).getAmount().getTotal());
 
@@ -142,15 +147,13 @@ public class PayPalController extends ClientController {
                         .customer(customer)
                         .totalPrice(totalPrice)
                         .coupons(coupons)
+                        .paymentApproval(true)
                         .build();
 
                 Purchase savedPurchase = purchaseRepository.save(purchase);
 
-               purchase.setPaymentApproval(true);
-                purchaseRepository.save(purchase);
+                return new ResponseEntity<>(savedPurchase,HttpStatus.OK);
 
-
-                return true;
             }
 
         } catch (PayPalRESTException e) {

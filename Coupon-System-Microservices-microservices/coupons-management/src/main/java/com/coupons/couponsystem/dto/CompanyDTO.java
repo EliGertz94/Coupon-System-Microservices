@@ -26,8 +26,9 @@ public class CompanyDTO {
         private String name;
         private String username;
         private String password;
+        private boolean isActive;
 
-        private ClientType clientRole;
+//        private ClientType clientRole;
 
 
         private List<Coupon> coupons ;
@@ -37,7 +38,8 @@ public class CompanyDTO {
                 this.companyId= company.getId();
                 this.name = company.getName();
                 this.password= user.getPassword();
-                this.clientRole =user.getClientRole();
+                this.isActive=company.isActive();
+//                this.clientRole =user.getClientRole();
                 if(company.getCoupons()!=null){
                         this.coupons = company.getCoupons();
                 }else{

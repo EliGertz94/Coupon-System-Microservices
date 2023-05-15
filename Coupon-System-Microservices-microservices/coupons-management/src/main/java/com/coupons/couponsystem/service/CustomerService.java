@@ -11,15 +11,15 @@ public interface CustomerService {
 
 //    boolean logIn(String email, String password) throws CouponSystemException;
 
-    String makePurchase(List<Long> couponIdList) throws CouponSystemException;
+    String makePurchase(List<Long> couponIdList,long customerId) throws CouponSystemException;
 
-    List<Purchase> getCustomerPurchases() throws CouponSystemException;
+    List<Purchase> getCustomerPurchases(long customerId) throws CouponSystemException;
 
-    List<Purchase> getCustomerPurchases(double maxPrice) throws CouponSystemException;
+    List<Purchase> getCustomerPurchases(double maxPrice,long customerId) throws CouponSystemException;
 
 //    List<Coupon> getCustomerPurchases(Category category);
 
-    Customer getCustomerDetails() throws CouponSystemException;
+    Customer getCustomerDetails(long customerId) throws CouponSystemException;
 
 
 

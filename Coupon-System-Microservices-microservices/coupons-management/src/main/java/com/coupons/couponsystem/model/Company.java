@@ -31,10 +31,13 @@ public class Company {
     @OneToMany(mappedBy = "company",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
     private List<Coupon> coupons ;
 
+    private boolean isActive;
+
     @Builder
-    public Company(Long id, String name,  List<Coupon> coupons) {
+    public Company(Long id, String name,  List<Coupon> coupons,boolean isActive) {
         this.id = id;
         this.name = name;
+        this.isActive=isActive;
         if(coupons!=null){
             for (Coupon coupon :
                     coupons) {

@@ -6,6 +6,7 @@ import com.coupons.couponsystem.dto.LoginResponse;
 import com.coupons.couponsystem.exception.CouponSystemException;
 import com.coupons.couponsystem.security.SecuredUser;
 import com.coupons.couponsystem.security.UserDetailsServiceImpl;
+import com.coupons.couponsystem.service.impl.CompanyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,6 @@ public class AuthenticationController extends ClientController {
 
                 SecuredUser user = userDetailsService.loadUserByUsername(logInDOT.getUsername());
 
-                System.out.println("user id auth" + user.getUserId());
                 String token = tokenProvider.generateToken(user);
 
                 GrantedAuthority grantedAuth = user.getAuthorities().stream().toList().get(0);

@@ -3,13 +3,18 @@ package com.coupons.couponsystem.controller;
 
 import com.coupons.couponsystem.dto.CouponIdsDTO;
 import com.coupons.couponsystem.exception.CouponSystemException;
+import com.coupons.couponsystem.model.Coupon;
 import com.coupons.couponsystem.model.Customer;
 import com.coupons.couponsystem.model.Purchase;
+import com.coupons.couponsystem.security.SecuredUser;
+import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,12 +24,13 @@ import java.util.List;
 @RequestMapping("api/customer/")
 public class CustomerController extends ClientController {
 
+
     Logger logger= LoggerFactory.getLogger(CompanyController.class);
 
     @PostMapping("/purchase/")
-    public ResponseEntity<?> purchaseCoupon(@RequestBody CouponIdsDTO purchaseIds){
+    public ResponseEntity<?> purchaseCoupon(@RequestBody CouponIdsDTO purchaseIds,@AuthenticationPrincipal SecuredUser userDetails){
         try {
-            return new ResponseEntity<>(customerService.makePurchase(purchaseIds.getIds()), HttpStatus.OK);
+            return new ResponseEntity<>(customerService.makePurchase(purchaseIds.getIds(),userDetails.getUserId()), HttpStatus.OK);
 
         } catch (CouponSystemException e) {
             return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
@@ -37,9 +43,9 @@ public class CustomerController extends ClientController {
     }
 
     @GetMapping("/all-purchases/")
-    public ResponseEntity<?> getCustomerPurchases(Authentication authentication){
+    public ResponseEntity<?> getCustomerPurchases(@AuthenticationPrincipal SecuredUser userDetails){
     try    {
-            return new ResponseEntity<>(customerService.getCustomerPurchases(), HttpStatus.OK);
+            return new ResponseEntity<>(customerService.getCustomerPurchases(userDetails.getUserId()), HttpStatus.OK);
     } catch (CouponSystemException e) {
         return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
     }
@@ -51,22 +57,60 @@ public class CustomerController extends ClientController {
 //    }
 
     @GetMapping("/all-purchases/price/{maxPrice}")
-    public ResponseEntity<?> getCustomerPurchases(@PathVariable double maxPrice){
+    public ResponseEntity<?> getCustomerPurchases(@PathVariable double maxPrice,@AuthenticationPrincipal SecuredUser userDetails){
 
         try {
-            return new ResponseEntity<>(customerService.getCustomerPurchases(maxPrice),HttpStatus.OK);
+            return new ResponseEntity<>(customerService.getCustomerPurchases(maxPrice,userDetails.getUserId()),HttpStatus.OK);
         } catch (CouponSystemException e) {
             return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
         }
     }
 
     @GetMapping("/details")
-    public ResponseEntity<?> getCustomerDetails(){
+    public ResponseEntity<?> getCustomerDetails(@AuthenticationPrincipal SecuredUser userDetails){
         try {
-            return  new ResponseEntity<>(customerService.getCustomerDetails(),HttpStatus.OK);
+            return  new ResponseEntity<>(customerService.getCustomerDetails(userDetails.getUserId()),HttpStatus.OK);
         } catch (CouponSystemException e) {
             return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
         }
     }
+
+    @GetMapping("/all-coupons")
+    public ResponseEntity<List<Coupon>> getCompanyCoupons(){
+        System.out.println("get all coupons to buy ");
+
+        return new ResponseEntity<>(couponRepository.findAll() ,HttpStatus.OK);
+    }
+
+    @GetMapping("/all-coupons/{couponId}")
+    public ResponseEntity<?> getOneCouponFromTotal(@PathVariable long couponId )  {
+        try{
+            Coupon coupon = couponRepository.findById(couponId).orElseThrow(()
+                    -> new CouponSystemException(" coupon in coupon list was not found ", HttpStatus.NOT_FOUND));
+            return new ResponseEntity<>(coupon,HttpStatus.OK);
+
+
+        }catch (CouponSystemException e){
+            return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/get-image/{fileName}")
+    public ResponseEntity<?> getImage(@PathVariable("fileName")String fileName){
+
+
+        byte[] imageData= imageService.downloadImage(fileName);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+
+    }
+
+
+
 
 }

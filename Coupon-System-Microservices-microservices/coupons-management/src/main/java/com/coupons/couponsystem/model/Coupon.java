@@ -3,6 +3,7 @@ package com.coupons.couponsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "coupon")
+@Builder
 public class Coupon {
 
     @Id
@@ -25,19 +27,25 @@ public class Coupon {
     @ToString.Exclude
     @JsonIgnore
     private Company company;
-    @Enumerated(EnumType.ORDINAL)
 
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "imageId")
+    private ImageData imageData;
+    @Enumerated(EnumType.ORDINAL)
     @Column(name="category")
     private Category category;
     private String title;
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+
+    private int originalAmount;
     private int amount;
     private double price;
-    private String image;
-
     private boolean buyable;
+
+    private String image;
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = CascadeType.DETACH)

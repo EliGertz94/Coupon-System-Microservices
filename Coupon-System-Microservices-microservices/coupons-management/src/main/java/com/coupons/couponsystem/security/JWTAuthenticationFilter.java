@@ -1,6 +1,7 @@
 package com.coupons.couponsystem.security;
 
 import com.coupons.couponsystem.clientLogIn.ClientType;
+import com.coupons.couponsystem.clientLogIn.LoginManager;
 import com.coupons.couponsystem.exception.CouponSystemException;
 import com.coupons.couponsystem.service.impl.CompanyServiceImpl;
 import com.coupons.couponsystem.service.impl.CustomerServiceImpl;
@@ -36,6 +37,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private CompanyServiceImpl companyService;
 
+    @Autowired
+    private LoginManager loginManager;
+
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -61,7 +65,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
                 if (tokenProvider.validateToken(token, user)) {
 
-//                    System.out.println("auth of a user   " + user.getAuthorities().stream().toList().get(0).getAuthority());
 
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken
                             (user, null, user.getAuthorities());
@@ -72,11 +75,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
                     if (user.getAuthorities().stream().toList().get(0).getAuthority().equals(ClientType.Customer.toString())) {
                         System.out.println("customerService id was initiated ");
+
                         customerService.setCustomerId(user.getUserId());
                     }
                     if (user.getAuthorities().stream().toList().get(0).getAuthority().equals(ClientType.Company.toString())) {
+
+//                        CompanyServiceImpl companyService=(CompanyServiceImpl)  loginManager.logIn(user.getUsername(),user.getPassword(),ClientType.Company);
+
                         companyService.setCompanyId(user.getUserId());
-                        System.out.println("companyService id was initiated ");
+                     //   System.out.println("companyService id was initiated " + user.getUserId()+" company service id "+ companyService);
                     }
 
                 }
@@ -86,9 +93,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         }
-
-
-
         catch (Exception e) {
             byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("error","need to login again"  ));
             response.setContentType("application/json");
@@ -96,6 +100,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             response.getOutputStream().write(body);
         }
     }
+
+
+
 
 
 }

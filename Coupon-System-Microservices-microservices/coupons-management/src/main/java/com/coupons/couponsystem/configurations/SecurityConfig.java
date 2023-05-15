@@ -46,8 +46,13 @@ public class SecurityConfig {
               .requestMatchers("/api/paypal/**").permitAll()
               .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
               .requestMatchers("/api/admin/**").hasAuthority("Administrator")
+//              .requestMatchers("/api/company/all-coupons/**").hasAuthority("Customer")
+
               .requestMatchers("/api/company/**").hasAuthority("Company")
               .requestMatchers("/api/customer/**").hasAuthority("Customer")
+
+
+              //http://localhost:8081/api/company/all-coupons
               .anyRequest().authenticated()
 //                .and()
 //                .formLogin()
@@ -65,8 +70,6 @@ public class SecurityConfig {
 
 
 
-    //http.authorizeHttpRequests()
-    //              .requestMatchers("/api/admin/**").hasAuthority("Administrator")
 
     @Bean
     public PasswordEncoder passwordEncoder(){

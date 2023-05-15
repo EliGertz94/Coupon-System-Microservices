@@ -23,6 +23,9 @@ public abstract class ClientFacade {
         @Autowired
         protected WebClient webClient;
 
+        @Autowired
+        protected ImageServiceImpl imageService;
+
 
 
    //public abstract boolean logIn(String email, String password, ClientType clientType) throws CouponSystemException;

@@ -96,13 +96,13 @@ public class Test implements CommandLineRunner {
                 //admin.deleteCustomer(10);
 
             }
-            Coupon coupon = new Coupon(0L, null, Category.FOOD,
-                    "falafel world", "description",
-                    LocalDateTime.of(2023, 03, 01, 12, 12),
-                    LocalDateTime.of(2023, 07, 01, 12, 12),
-                    150, 80,
-                    "image", true,
-                    new ArrayList<>());
+//            Coupon coupon = new Coupon(0L, null, Category.FOOD,
+//                    "falafel world", "description",
+//                    LocalDateTime.of(2023, 03, 01, 12, 12),
+//                    LocalDateTime.of(2023, 07, 01, 12, 12),
+//                    150, 80,
+//                    "image", true,
+//                    new ArrayList<>());
 
             CompanyServiceImpl company = (CompanyServiceImpl) loginManager.logIn("companyinc@gmail.com","123456",ClientType.Company);
             if(company!=null) {
@@ -132,10 +132,10 @@ public class Test implements CommandLineRunner {
                 couponListIds.add(8L);
 
                 //make purchase
-                System.out.println(customer.makePurchase(couponListIds));
+               // System.out.println(customer.makePurchase(couponListIds));
 
 
-                List<Purchase> purchases = customer.getCustomerPurchases();
+              //  List<Purchase> purchases = customer.getCustomerPurchases();
 
             }
 

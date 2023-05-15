@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface CouponRepository extends JpaRepository<Coupon,Long> {
     boolean existsByTitleAndCompanyId(String title,long companyId);
+
+
     boolean existsByCompanyId(long companyId);
 
     List<Coupon> findAllByCompany_id(long company_id);
@@ -33,5 +35,7 @@ public interface CouponRepository extends JpaRepository<Coupon,Long> {
 //    void deleteByEndDateBefore(LocalDateTime endDate);
 
     List<Coupon> findAllByEndDateBefore(LocalDateTime endDate);
+
+    void deleteAllByCompany_id(long CompanyId);
 }
 

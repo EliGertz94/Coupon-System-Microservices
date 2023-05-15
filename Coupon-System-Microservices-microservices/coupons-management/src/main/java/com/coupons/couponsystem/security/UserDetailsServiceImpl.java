@@ -45,6 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         {
             Company company =  companyRepository.findByUserId(user.getId())
                     .orElseThrow(()-> new UsernameNotFoundException("No company user with such username in loaduserbyusername"));
+            System.out.println(company.getId() +" company id at loadbyUsername");
 
             return new SecuredUser(user,company.getId());
         }
