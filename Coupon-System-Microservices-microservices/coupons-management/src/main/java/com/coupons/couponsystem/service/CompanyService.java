@@ -19,7 +19,7 @@ public interface CompanyService {
 
     void deleteCoupon(long couponId,long companyId) throws CouponSystemException;
 
-    List<Coupon> getAllCompanyCoupons(long companyId);
+    List<Coupon> getAllCompanyCoupons(long companyId) throws CouponSystemException;
 
     List<Coupon> getAllCompanyCouponsByCategory(String category,long companyId);
 

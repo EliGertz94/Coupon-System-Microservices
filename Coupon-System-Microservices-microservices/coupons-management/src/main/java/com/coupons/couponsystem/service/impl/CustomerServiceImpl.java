@@ -135,12 +135,14 @@ public class CustomerServiceImpl extends ClientFacade  implements CustomerServic
 
 
     /**
-     *checking if coupon is purchasable and has amount bigger than 0
+     *checking if coupon is purchasable and has amount bigger than 0 also checking if the company is currently active
      * @return boolean
      */
 
     private boolean checkedCoupon(Coupon coupon){
-        if(coupon.getAmount()<= 0|| !coupon.isBuyable())
+
+
+        if(coupon.getAmount()<= 0|| !coupon.isBuyable()|| !coupon.getCompany().isActive())
         {
             return false;
         }

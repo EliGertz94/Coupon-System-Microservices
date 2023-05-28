@@ -57,6 +57,7 @@ public class CompanyController  extends ClientController{
                     .description(description)
                     .startDate(startDate)
                     .endDate(endDate)
+                    .image(file.getOriginalFilename())
                     .build();
             return new ResponseEntity<>( companyService.addCoupon(userDetails.getUserId(),coupon, file),HttpStatus.OK);
 
@@ -69,11 +70,17 @@ public class CompanyController  extends ClientController{
     }
 
     @PutMapping("/update-coupon")
-    public ResponseEntity<String> updateCoupon(@RequestBody  Coupon coupon,@AuthenticationPrincipal SecuredUser userDetails){
+    public ResponseEntity<?> updateCoupon(@RequestBody  Coupon coupon,@AuthenticationPrincipal SecuredUser userDetails){
+
+
+
         try {
+
             companyService.updateCoupon(coupon,userDetails.getUserId());
         } catch (CouponSystemException e) {
             return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+        }catch (Exception e) {
+            return new ResponseEntity<>("Global Exception at update coupon", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("coupon was updated",HttpStatus.OK);
     }

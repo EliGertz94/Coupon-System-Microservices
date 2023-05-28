@@ -23,7 +23,7 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
         }else if(response.getStatus() == 403){
              responseMessage = " Can't reach resources ";
         }
-        byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("error",responseMessage));
+        byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("error",responseMessage + response.getStatus()));
         response.setContentType("application/json");
 
         response.setStatus(response.getStatus());

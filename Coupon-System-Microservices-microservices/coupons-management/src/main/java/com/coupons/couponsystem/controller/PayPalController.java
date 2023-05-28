@@ -13,12 +13,17 @@ import com.paypal.api.payments.Item;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import io.swagger.v3.oas.models.links.Link;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.net.URI;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,9 +88,8 @@ public class PayPalController extends ClientController {
         return "cancel";
     }
 
-    // successful payment action endpoint
     @GetMapping("pay/success/")
-    public ResponseEntity<Purchase> successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    public ModelAndView successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
             Payment payment = paypalService.executePayment(paymentId, payerId);
 //            payment.getTransactions()
@@ -152,7 +156,9 @@ public class PayPalController extends ClientController {
 
                 Purchase savedPurchase = purchaseRepository.save(purchase);
 
-                return new ResponseEntity<>(savedPurchase,HttpStatus.OK);
+//                responseS.setHeader("Location", "http://localhost:3000/cart");
+
+                return new ModelAndView("redirect:http://localhost:3000/cart");
 
             }
 
@@ -161,9 +167,13 @@ public class PayPalController extends ClientController {
         } catch (CouponSystemException e) {
             throw new RuntimeException(e);
         }
+        catch (Exception e) {
+            System.out.println("general exception in paypal");
+        }
         return null;
     }
 
+    // successful payment action endpoint
 
 
 }

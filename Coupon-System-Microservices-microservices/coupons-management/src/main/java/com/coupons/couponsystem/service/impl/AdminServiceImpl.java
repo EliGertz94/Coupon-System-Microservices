@@ -64,11 +64,11 @@ public class AdminServiceImpl extends  ClientFacade implements AdminService {
 
                 //add info about new user that was added
 
-                ResponseEntity<String> response = webClient.post()
-                        .uri("http://localhost:8083/stats/")
-                        .bodyValue(addUserRecordToStats(user))
-                        .retrieve()
-                        .toEntity(String.class).block();
+//                ResponseEntity<String> response = webClient.post()
+//                        .uri("http://localhost:8083/stats/")
+//                        .bodyValue(addUserRecordToStats(user))
+//                        .retrieve()
+//                        .toEntity(String.class).block();
 
                 return newCompany;
             }
@@ -199,11 +199,11 @@ public class AdminServiceImpl extends  ClientFacade implements AdminService {
         newCustomer.setUser(user);
         userRepository.save(user);
 
-        ResponseEntity<String> response = webClient.post()
-                .uri("http://localhost:8083/stats/")
-                .bodyValue(addUserRecordToStats(user))
-                .retrieve()
-                .toEntity(String.class).block();
+//        ResponseEntity<String> response = webClient.post()
+//                .uri("http://localhost:8083/stats/")
+//                .bodyValue(addUserRecordToStats(user))
+//                .retrieve()
+//                .toEntity(String.class).block();
 
 
         return customerRepository.save(customer);

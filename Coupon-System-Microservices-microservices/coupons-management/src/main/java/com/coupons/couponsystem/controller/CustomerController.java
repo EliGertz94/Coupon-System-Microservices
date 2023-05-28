@@ -3,6 +3,7 @@ package com.coupons.couponsystem.controller;
 
 import com.coupons.couponsystem.dto.CouponIdsDTO;
 import com.coupons.couponsystem.exception.CouponSystemException;
+import com.coupons.couponsystem.model.Company;
 import com.coupons.couponsystem.model.Coupon;
 import com.coupons.couponsystem.model.Customer;
 import com.coupons.couponsystem.model.Purchase;
@@ -18,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 @CrossOrigin
 @RestController
@@ -75,17 +77,36 @@ public class CustomerController extends ClientController {
         }
     }
 
-    @GetMapping("/all-coupons")
-    public ResponseEntity<List<Coupon>> getCompanyCoupons(){
-        System.out.println("get all coupons to buy ");
+    //Will only return coupons of all active companies
 
-        return new ResponseEntity<>(couponRepository.findAll() ,HttpStatus.OK);
+    @GetMapping("/all-coupons")
+    public ResponseEntity<?> getCompanyCoupons(){
+
+       try {
+            List<Company> companies = companyRepository.findAllByIsActiveTrue()
+                    .orElseThrow(()
+                            -> new CouponSystemException(" coupon in coupon list was not found ", HttpStatus.NOT_FOUND));
+
+            System.out.println("get all coupons to buy ");
+            List<Coupon> coupons = new ArrayList<>();
+           List<Coupon> merge = new ArrayList<>();
+
+           for(Company company : companies){
+               merge.addAll(company.getCoupons());
+           }
+            return new ResponseEntity<>(merge, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/all-coupons/{couponId}")
     public ResponseEntity<?> getOneCouponFromTotal(@PathVariable long couponId )  {
         try{
-            Coupon coupon = couponRepository.findById(couponId).orElseThrow(()
+
+
+            Coupon coupon = couponRepository.findById(couponId)
+                    .orElseThrow(()
                     -> new CouponSystemException(" coupon in coupon list was not found ", HttpStatus.NOT_FOUND));
             return new ResponseEntity<>(coupon,HttpStatus.OK);
 

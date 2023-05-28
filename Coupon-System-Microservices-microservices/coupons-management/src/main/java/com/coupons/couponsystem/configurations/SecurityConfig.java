@@ -41,6 +41,9 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
       http.authorizeHttpRequests()
+              .requestMatchers("/src/**").permitAll()
+
+              .requestMatchers("/images/**").permitAll()
               .requestMatchers("/api/authentication/**").permitAll()
               .requestMatchers("/api/authentication/**").permitAll()
               .requestMatchers("/api/paypal/**").permitAll()

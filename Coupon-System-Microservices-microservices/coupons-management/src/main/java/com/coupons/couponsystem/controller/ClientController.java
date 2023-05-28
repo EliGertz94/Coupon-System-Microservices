@@ -2,6 +2,7 @@ package com.coupons.couponsystem.controller;
 
 import com.coupons.couponsystem.clientLogIn.LoginManager;
 import com.coupons.couponsystem.model.ImageData;
+import com.coupons.couponsystem.repositoty.CompanyRepository;
 import com.coupons.couponsystem.repositoty.CouponRepository;
 import com.coupons.couponsystem.repositoty.PurchaseRepository;
 import com.coupons.couponsystem.security.JWTTokenProvider;
@@ -48,6 +49,9 @@ public abstract  class ClientController {
 
         @Autowired
         CouponRepository couponRepository;
+
+        @Autowired
+        CompanyRepository companyRepository;
 
         @Autowired
         ImageServiceImpl imageService;

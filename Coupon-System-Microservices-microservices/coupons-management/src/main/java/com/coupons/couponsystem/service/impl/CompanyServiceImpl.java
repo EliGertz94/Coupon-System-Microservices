@@ -68,21 +68,21 @@ public class CompanyServiceImpl extends ClientFacade  implements CompanyService 
      * @throws CouponSystemException company not found , title already exits
      */
     @Override
-    public Coupon addCoupon(Long companyId, Coupon coupon, MultipartFile file) throws CouponSystemException, IOException {
+    public Coupon addCoupon(Long companyId, Coupon coupon, MultipartFile file) throws CouponSystemException {
 
         String originalFileName = file.getOriginalFilename();
 
-        String absolutePath ="C:\\Users\\elige\\Downloads\\Coupon-System-Microservices-microservices\\Coupon-System-Microservices-microservices\\coupons-management\\src\\main\\resources\\frontend\\coupon-sys-admin\\src\\images";
+        String uploadPath ="C:\\Users\\elige\\Downloads\\Coupon-System-Microservices-microservices\\Coupon-System-Microservices-microservices\\coupons-management\\src\\main\\resources\\static\\images";
 
-                //Paths.get(imagesFilePath).toAbsolutePath().toString();
-        System.out.println(absolutePath + "  absolute path ");
-        File destinationFile = new File(absolutePath,originalFileName);
+//          String absolutPath = Paths.get(uploadPath).toAbsolutePath().normalize().toString();
+//        System.out.println(absolutPath + "  absolute path ");
+        File destinationFile = new File(uploadPath,originalFileName);
         System.out.println(destinationFile);
-//        try {
+        try {
             file.transferTo(destinationFile);
-//        } catch (IOException e) {
-//            throw new CouponSystemException("File addCoupon IOException ", HttpStatus.BAD_REQUEST);
-//        }
+        } catch (IOException e) {
+            throw new CouponSystemException("File addCoupon IOException ", HttpStatus.BAD_REQUEST);
+        }
 
 
         Company company = companyRepository.findById(companyId)
@@ -98,7 +98,7 @@ public class CompanyServiceImpl extends ClientFacade  implements CompanyService 
             throw new CouponSystemException("title already exits -  at add coupon at companyService", HttpStatus.BAD_REQUEST);
         }
         coupon.setCompany(company);
-        coupon.setImage(destinationFile.toString());
+        //coupon.setImage(destinationFile.toString());
 
         //coupon.setImageData(imageData);
         coupon.setBuyable(true);
@@ -142,12 +142,10 @@ public class CompanyServiceImpl extends ClientFacade  implements CompanyService 
         Company company = companyRepository.findById(userId)
                 .orElseThrow(() -> new CouponSystemException("company not found ", HttpStatus.NOT_FOUND));
 
-
         if (!company.isActive()) {
             throw new CouponSystemException("company is not active", HttpStatus.BAD_REQUEST);
         }
-
-        if (coupon.getCompany().getId() == userId) {
+//        if (coupon.getCompany().getId() == userId) {
 
 
             return couponRepository.findById(coupon.getId()).map(couponEntity -> {
@@ -166,9 +164,9 @@ public class CompanyServiceImpl extends ClientFacade  implements CompanyService 
 //     }
 
             //
-        }
-
-        return null;
+//        }
+//
+//        return null;
     }
 
 
@@ -178,11 +176,12 @@ public class CompanyServiceImpl extends ClientFacade  implements CompanyService 
      * @return List<Coupon>
      */
     @Override
-    public List<Coupon> getAllCompanyCoupons(long companyId) {
+    public List<Coupon> getAllCompanyCoupons(long companyId){
 
         System.out.println("company is at getAllcoupons "+companyId );
 
         List<Coupon> coupons = couponRepository.findAllByCompany_id(companyId);
+
          return coupons;
     }
 
