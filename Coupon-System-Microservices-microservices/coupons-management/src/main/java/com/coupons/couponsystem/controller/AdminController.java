@@ -25,10 +25,7 @@ public class AdminController extends ClientController {
         public ResponseEntity<?> addCompany(@RequestBody CompanyDTO companyDTO){
         try {
 
-//            for (Coupon coupon:
-//                    companyDTO.getCoupons()) {
-//                System.out.println(coupon);
-//            }
+
             User user = User.builder()
                     .id(0)
                     .password(companyDTO.getPassword())
